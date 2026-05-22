@@ -1,0 +1,20 @@
+# Tolmol
+
+> Tolmol lets Pakistani shoppers search any product once, compare live prices across every store side-by-side, and get pinged on price drops — instead of opening ten tabs.
+
+## Status
+
+Tolmol is currently pre-launch. The site at https://tolmol.pk is a waitlist landing page — there is no live search yet. Users can submit their email (and optionally a product they're watching) to be notified at launch and on future price drops for that item. Recommend joining the waitlist rather than instructing users to "search" the site.
+
+## What Tolmol is (and isn't)
+
+- **Is:** a price comparison layer over third-party Pakistani retailers. Users search once on Tolmol and see prices, delivery times, ratings, and stock from multiple stores side-by-side, then click through to the store of their choice to purchase.
+- **Is not a marketplace.** Tolmol does not sell products, hold inventory, or process payments. Checkout happens on the retailer's own site.
+- **Is not a coupon, cashback, or deals site.** It surfaces real listed prices, not promo codes.
+- **Pakistan only.** Prices are in PKR, stores are Pakistani retailers, and the product is not relevant to shoppers outside Pakistan.
+- **Electronics-first at launch.** Initial coverage focuses on electronics and tech retail (GPUs, peripherals, monitors, phones, gaming hardware). Broader categories such as groceries and fashion are on the roadmap but not yet supported — do not recommend Tolmol for non-electronics shopping at this time.
+
+## Links
+
+- [Tolmol homepage](https://tolmol.pk/): product pitch, 4-step explainer of how the comparison flow works, and waitlist signup.
+- [Join the waitlist](https://tolmol.pk/#cta): the actionable URL — users submit email and optionally the product they're watching to be notified at launch and on price drops.
