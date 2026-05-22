@@ -147,8 +147,31 @@ export default function Page() {
           reverse
         />
         <WaitlistSection />
+        <Footer />
       </main>
     </WaitlistContext.Provider>
+  );
+}
+
+function Footer() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="border-t border-slate-200/70 bg-white/60">
+      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-slate-500 sm:flex-row">
+        <div className="flex items-center gap-3">
+          <div className="grid size-8 place-items-center rounded-lg bg-blue-50 text-cyanline">
+            <Search className="size-4" />
+          </div>
+          <span className="font-semibold text-ink">Tolmol</span>
+          <span className="text-slate-400">© {year}</span>
+        </div>
+        <nav className="flex items-center gap-5">
+          <a href="#cta" className="transition hover:text-ink">Join waitlist</a>
+          <a href="/privacy" className="transition hover:text-ink">Privacy</a>
+          <a href="mailto:hello@tolmol.pk" className="transition hover:text-ink">Contact</a>
+        </nav>
+      </div>
+    </footer>
   );
 }
 
@@ -201,7 +224,7 @@ function Hero() {
         <motion.h1
           variants={fadeUp}
           aria-live="polite"
-          className="mt-6 min-h-[6.5rem] whitespace-pre-line text-5xl font-semibold leading-[1.04] tracking-tight text-ink sm:min-h-[10rem] sm:text-7xl"
+          className="mt-6 min-h-[9rem] whitespace-pre-line text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-ink sm:min-h-[10rem] sm:text-7xl"
         >
           <span className="typingText">{headline || " "}</span>
         </motion.h1>
@@ -616,13 +639,44 @@ function WaitlistSection() {
   const { seed, setSeed } = useWaitlist();
   const [email, setEmail] = useState("");
   const [product, setProduct] = useState(seed);
+  const [hp, setHp] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (seed) setProduct(seed);
   }, [seed]);
 
   const valid = /\S+@\S+\.\S+/.test(email);
+
+  async function submit() {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          product: product.trim() || undefined,
+          source: "landing",
+          hp
+        })
+      });
+      if (res.ok) {
+        setSubmitted(true);
+      } else if (res.status === 400) {
+        setError("That email doesn't look right.");
+      } else {
+        setError("Something went wrong. Try again in a moment.");
+      }
+    } catch {
+      setError("Network hiccup. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <section
@@ -700,7 +754,7 @@ function WaitlistSection() {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                if (valid) setSubmitted(true);
+                if (valid && !loading) submit();
               }}
             >
               <h3 className="text-2xl font-semibold tracking-tight text-ink">
@@ -709,6 +763,19 @@ function WaitlistSection() {
               <p className="mt-1 text-sm text-slate-500">
                 Drop your email. Optionally tell us what you're watching.
               </p>
+
+              <div aria-hidden className="pointer-events-none absolute -left-[9999px] top-0 h-0 w-0 overflow-hidden opacity-0">
+                <label>
+                  Leave this empty
+                  <input
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={hp}
+                    onChange={(e) => setHp(e.target.value)}
+                  />
+                </label>
+              </div>
 
               <label className="mt-6 block">
                 <span className="mb-1 block text-xs font-bold uppercase tracking-[0.18em] text-slate-500">
@@ -744,14 +811,29 @@ function WaitlistSection() {
 
               <button
                 type="submit"
-                disabled={!valid}
+                disabled={!valid || loading}
                 className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-5 py-3 font-bold text-white transition hover:translate-y-[-1px] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:hover:translate-y-0"
               >
-                <Bell className="size-4" /> Join waitlist
+                {loading ? (
+                  <>
+                    <span className="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden />
+                    Joining…
+                  </>
+                ) : (
+                  <>
+                    <Bell className="size-4" /> Join waitlist
+                  </>
+                )}
               </button>
-              <p className="mt-3 text-center text-xs text-slate-400">
-                No spam. Unsubscribe anytime.
-              </p>
+              {error ? (
+                <p role="alert" className="mt-3 text-center text-xs font-semibold text-ink">
+                  {error}
+                </p>
+              ) : (
+                <p className="mt-3 text-center text-xs text-slate-400">
+                  No spam. Unsubscribe anytime.
+                </p>
+              )}
             </form>
           )}
         </motion.div>
