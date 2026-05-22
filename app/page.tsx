@@ -223,10 +223,12 @@ function Hero() {
         </motion.p>
         <motion.h1
           variants={fadeUp}
-          aria-live="polite"
           className="mt-6 min-h-[9rem] whitespace-pre-line text-[2.6rem] font-semibold leading-[1.05] tracking-tight text-ink sm:min-h-[10rem] sm:text-7xl"
         >
-          <span className="typingText">{headline || " "}</span>
+          <span className="sr-only">
+            Compare prices across every Pakistani store with Tolmol.
+          </span>
+          <span aria-hidden className="typingText">{headline || " "}</span>
         </motion.h1>
         <motion.p
           variants={fadeUp}
